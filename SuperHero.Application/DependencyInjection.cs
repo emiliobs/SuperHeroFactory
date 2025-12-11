@@ -9,18 +9,25 @@ using SuperHero.Infrastructure.Repositories;
 
 namespace SuperHero.Application;
 
+// Extension method to add infrastructure services to the IServiceCollection
 public static class DependencyInjection
 {
+    // Adds infrastructure services to the IServiceCollection
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        // Configure the DbContext to use an in-memory database for simplicity
         services.AddDbContext<AppDbContext>(options =>
             options.UseInMemoryDatabase("SuperHeroDb"));
 
+        // Register repositories and unit of work
         services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
+
+        // Register the UnitOfWork
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        // Register application services
         return services;
     }
 }
