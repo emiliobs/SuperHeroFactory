@@ -18,8 +18,11 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         // Configure the DbContext to use an in-memory database for simplicity
+        //services.AddDbContext<AppDbContext>(options =>
+        //    options.UseInMemoryDatabase("SuperHeroDb"));
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseInMemoryDatabase("SuperHeroDb"));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         // Register repositories and unit of work
         services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
@@ -28,6 +31,12 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Register application services
+        return services;
+    }
+
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddScoped<ISuperHeroService, SuperHeroService>();
         return services;
     }
 }

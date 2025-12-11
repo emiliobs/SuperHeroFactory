@@ -22,7 +22,7 @@ public class SuperHeroService : ISuperHeroService
         this._mapper = mapper;
     }
 
-    public async Task<IReadOnlyList<ToyDto>> GetAllAsync()
+    public async Task<ICollection<ToyDto>> GetAllAsync()
     {
         var heroes = await _repository.GetAllAsync();
         return _mapper.Map<List<ToyDto>>(heroes);

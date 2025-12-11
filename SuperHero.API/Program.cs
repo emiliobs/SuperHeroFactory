@@ -1,30 +1,46 @@
-namespace SuperHero.API
+using AutoMapper; // importante para que se vea AddAutoMapper
+using SuperHero.Application;
+using SuperHero.Application.Mapping;
+using SuperHero.Infrastructure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// AutoMapper: scan profiles starting from SuperHeroProfile
+builder.Services.AddAutoMapper(cfg => { }, typeof(ToyProfile));
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// For to be able to login with token using Swgeer testing.
+
+builder.Services.AddCors(options =>
 {
-    public class Program
+    options.AddDefaultPolicy(policy =>
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
-            // Add services to the container.
-            builder.Services.AddAuthorization();
+var app = builder.Build();
 
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-            var app = builder.Build();
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+app.UseHttpsRedirection();
+app.UseCors();
+app.MapControllers();
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.Run();
-        }
-    }
-}
+app.Run();

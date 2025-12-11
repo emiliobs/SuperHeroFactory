@@ -7,7 +7,7 @@ namespace SuperHero.Application.Services;
 
 public interface ISuperHeroService
 {
-    Task<IReadOnlyList<ToyDto>> GetAllAsync();
+    Task<ICollection<ToyDto>> GetAllAsync();
 
     Task<ToyDto?> GetByIdAsync(int id);
 
