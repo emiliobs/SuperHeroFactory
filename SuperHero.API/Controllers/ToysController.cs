@@ -2,67 +2,66 @@
 using SuperHero.Application.DTOs;
 using SuperHero.Application.Services;
 
-namespace SuperHero.API.Controllers
+namespace SuperHero.API.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class ToysController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class ToysController : ControllerBase
+    private readonly ISuperHeroService _service;
+
+    public ToysController(ISuperHeroService service)
     {
-        private readonly ISuperHeroService _service;
+        this._service = service;
+    }
 
-        public ToysController(ISuperHeroService service)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ToyDto>>> GetAll()
+    {
+        var heroes = await _service.GetAllAsync();
+        return Ok(heroes);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ToyDto>> GetById(int id)
+    {
+        var hero = await _service.GetByIdAsync(id);
+        if (hero is null)
         {
-            this._service = service;
+            return NotFound();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToyDto>>> GetAll()
+        return Ok(hero);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<ToyDto>> Create([FromBody] CreateToyDto dto)
+    {
+        var created = await _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.id }, created);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateToyDto dto)
+    {
+        var updated = await _service.UpdateAsync(id, dto);
+        if (!updated)
         {
-            var heroes = await _service.GetAllAsync();
-            return Ok(heroes);
+            return NotFound();
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<ToyDto>> GetById(int id)
-        {
-            var hero = await _service.GetByIdAsync(id);
-            if (hero is null)
-            {
-                return NotFound();
-            }
+        return NoContent();
+    }
 
-            return Ok(hero);
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ToyDto>> Create([FromBody] CreateToyDto dto)
-        {
-            var created = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = created.id }, created);
-        }
-
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateToyDto dto)
-        {
-            var updated = await _service.UpdateAsync(id, dto);
-            if (!updated)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var deleted = await _service.DeleteAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }
