@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SuperHero.Domain\SuperHero.Domain.csproj" />
+    <ProjectReference Include="..\SuperHero.Infrastructure\SuperHero.Infrastructure.csproj" />
+    <ProjectReference Include="..\SuperHero.UI\SuperHero.UI.csproj" />
+  </ItemGroup>
+
+</Project>

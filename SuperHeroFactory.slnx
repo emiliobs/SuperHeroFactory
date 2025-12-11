@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="SuperHero.API/SuperHero.API.csproj" Id="b822cad3-e5ae-4e7c-a8c2-c15fb5e44e4b" />
+  <Project Path="SuperHero.Application/SuperHero.Application.csproj" Id="7826b898-bf9d-4db6-8c11-0e66c23ace92" />
+  <Project Path="SuperHero.Domain/SuperHero.Domain.csproj" Id="64dc0982-70ff-48e9-bf64-1affe3884122" />
+  <Project Path="SuperHero.Infrastructure/SuperHero.Infrastructure.csproj" Id="ada94397-5973-451f-84d7-11014add4044" />
+  <Project Path="SuperHero.UI/SuperHero.UI.csproj" Id="d3f8b3f0-b3d0-42e0-8b82-4346e511d52e" />
+</Solution>
