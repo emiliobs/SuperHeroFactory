@@ -5,7 +5,7 @@ using SuperHero.Application.Services;
 namespace SuperHero.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ToysController : ControllerBase
 {
     private readonly ISuperHeroService _service;

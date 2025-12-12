@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using SuperHero.UI.Clients;
 
 namespace SuperHero.UI
 {
@@ -11,7 +12,14 @@ namespace SuperHero.UI
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            var apiURL = "https://localhost:7058/";
+
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(apiURL)
+            });
+
+            builder.Services.AddScoped<ISuperHeroApiClient, SuperHeroApiClient>();
 
             await builder.Build().RunAsync();
         }

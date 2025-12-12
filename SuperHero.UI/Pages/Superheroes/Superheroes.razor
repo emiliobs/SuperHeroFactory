@@ -1,0 +1,145 @@
+﻿@page "/superheroes"
+
+@using SuperHero.UI.Clients
+@using SuperHero.UI.Models
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject ISuperHeroApiClient ApiClient
+
+<h3 class="super-hero-page-title">Super Heroes</h3>
+
+@if (isLoading)
+{
+    <p>Loading heroes...</p>
+}
+else if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else
+{
+    <div class="super-hero-layout">
+        <div class="super-hero-layout-left">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="mb-0">List</h4>
+
+                <div class="input-group input-group-sm super-hero-search-group">
+                    <span class="input-group-text">Search</span>
+                    <input class="form-control"
+                           @bind="searchTerm"
+                           @bind:event="oninput"
+                           placeholder="Alias or real name..." />
+                </div>
+            </div>
+
+            @if (FilteredHeroes.Count == 0)
+            {
+                @if (heroes.Count == 0)
+                {
+                    <p>No heroes yet. Create the first one.</p>
+                }
+                else
+                {
+                    <p>No heroes match the current search.</p>
+                }
+            }
+            else
+            {
+                @foreach (var hero in FilteredHeroes)
+                {
+                    <div class="super-hero-card">
+                        <div class="super-hero-card-header">
+                            <div>
+                                <strong>@hero.Alias</strong>
+                                <div class="text-muted small">@hero.Name</div>
+                            </div>
+                            <span class="badge bg-secondary">
+                                Power @hero.PowerLevel
+                            </span>
+                        </div>
+
+                        <div class="mt-1">
+                            @hero.MainPower
+                        </div>
+
+                        @if (hero.FirstAppearance.HasValue)
+                        {
+                            <div class="text-muted small mt-1">
+                                First appearance: @hero.FirstAppearance.Value.ToString("yyyy-MM-dd")
+                            </div>
+                        }
+
+                        <div class="super-hero-card-actions">
+                            <button class="btn btn-sm btn-outline-light"
+                                    @onclick="@(() => EditHero(hero))">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                    @onclick="@(() => DeleteHeroAsync(hero.Id))">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="super-hero-layout-right">
+            <div class="card">
+                <div class="card-body">
+                    <h4>@(isEditMode ? "Edit hero" : "Create hero")</h4>
+
+                    <EditForm Model="editModel" OnValidSubmit="SaveAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-2">
+                            <label class="form-label">Real name</label>
+                            <InputText class="form-control" @bind-Value="editModel.Name" />
+                            <ValidationMessage For="() => editModel.Name" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Alias</label>
+                            <InputText class="form-control" @bind-Value="editModel.Alias" />
+                            <ValidationMessage For="() => editModel.Alias" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Main power</label>
+                            <InputText class="form-control" @bind-Value="editModel.MainPower" />
+                            <ValidationMessage For="() => editModel.MainPower" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Power level (1-100)</label>
+                            <InputNumber class="form-control" @bind-Value="editModel.PowerLevel" />
+                            <ValidationMessage For="() => editModel.PowerLevel" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">First appearance</label>
+                            <InputDate TValue="DateOnly ?" class="form-control"
+                                       @bind-Value="editModel.FirstAppearance" />
+                            <ValidationMessage For="() => editModel.FirstAppearance" />
+                        </div>
+
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-primary me-2">
+                                @(isEditMode ? "Save changes" : "Create")
+                            </button>
+                            @if (isEditMode)
+                            {
+                                <button type="button" class="btn btn-secondary" @onclick="ResetForm">
+                                    Cancel
+                                </button>
+                            }
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
